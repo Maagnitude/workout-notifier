@@ -53,7 +53,7 @@ while True:
         
         pyautogui.press('f')
         
-        print(f"'{Fore.GREEN}{video_title}{Fore.RESET}' just started! Have fun!")
+        print(f"\nYour video: '{Fore.GREEN}{video_title}{Fore.RESET}' just started!\nHave fun!")
 
         # Wait for 24 hours before checking the time again
         time.sleep(24 * 60 * 60)
