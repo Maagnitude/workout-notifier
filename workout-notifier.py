@@ -4,43 +4,44 @@ import pyautogui
 from pytube import YouTube
 from colorama import init, Fore
 
-init()
+init()      # Initializing colorama 
 
-# Replace the URL below with the YouTube video you want to open
 print("\nDefault workout YouTube video: 4 Minute OFFICE STRETCHING(full body)\n")
 url = input("Enter the url of a workout YouTube video (or press Enter): ")
 
 if url == '':
-        url = "https://www.youtube.com/watch?v=MTU4iCDntjs"
+        url = "https://www.youtube.com/watch?v=MTU4iCDntjs"     # If the user doesn't give a url (Hits Enter)
 else:
-    if not url.startswith('https'):
+    if not url.startswith('https'):                             # If the url doesn't start with 'https', we add it.
         url = 'https://www.' + url
         
-if not url.__contains__('youtube'):
-    print("\nThat's not a YouTube video url. Next time please give the correct url.")
+if not url.__contains__('youtube'):                             # If the url isn't about a YouTube video, program exits.
+    print(f"\nThat's {Fore.RED}not a YouTube video url{Fore.RESET}.\
+        \nNext time please give the {Fore.GREEN}correct url{Fore.RESET}.\
+        \nExiting...")
     exit(1)
 
-video = YouTube(url)
+video = YouTube(url)                # We make a YouTube video object, to use its info
 
-video_title = video.title
-video_author = video.author
+video_title = video.title           # YouTube video's title
+video_author = video.author         # YouTube video's creator
 
-# Set the time you want the script to open the video (24-hour format)
+# In this section we set the time we want the script to open the video (24-hour format)
 print("\nDefault hour/minute: 14:45\n")
 hour = input("Enter the hour of the day for the reminder (or press Enter): ")
 minute = input("\nEnter the minute of the day for the reminder (or press Enter): ")
 
-if hour == '':
+if hour == '':              # If no hour given, default is 14
     hour = 14
 else:
-    hour = int(hour)
+    hour = int(hour)        # otherwise we typecast it to int
 
-if minute == '':
+if minute == '':            # If no minute given, default is 45
     minute = 45
 else:
-    minute = int(minute)
+    minute = int(minute)    # otherwise we typecast it to int
     
-minute_vis = '0' + str(minute) if minute < 10 else minute
+minute_vis = '0' + str(minute) if minute < 10 else minute   # If the minute is between 0 and 9, we want to print 00 - 09
 
 print(f"\nWorkout reminder has been set!\nYou'll watch '{Fore.GREEN}{video_title}{Fore.RESET}' \n  \
         by {Fore.RED}'{video_author}'{Fore.RESET} \n  \
@@ -48,22 +49,20 @@ print(f"\nWorkout reminder has been set!\nYou'll watch '{Fore.GREEN}{video_title
         Be prepared!")
 
 while True:
-    # Get the current time
+    # We get the current time
     current_time = time.localtime()
 
-    # Check if the current time matches the desired time to open the video
+    # If the current time is equal to the desired time, we open the YouTube video
     if current_time.tm_hour == hour and current_time.tm_min == minute:
-        # Open the URL in your default web browser
-        webbrowser.open(url)
         
-        time.sleep(2)
+        webbrowser.open(url)        # Opening the URL in the default web browser
         
-        pyautogui.press('f')
+        time.sleep(2)               # Waiting 2 seconds to load the video
+        
+        pyautogui.press('f')        # Pressing 'f' key, to get into fullscreen
         
         print(f"\nYour video: '{Fore.GREEN}{video_title}{Fore.RESET}' just started!\nHave fun!")
 
-        # Wait for 24 hours before checking the time again
-        time.sleep(24 * 60 * 60)
+        time.sleep(24 * 60 * 60)    # Waiting exactly 24 hours, to check the time again
     else:
-        # Wait for 1 minute before checking the time again
-        time.sleep(60)
+        time.sleep(60)              # Checking the time every 60 seconds
