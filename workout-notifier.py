@@ -35,7 +35,7 @@ else:
     
 minute_vis = '0' + str(minute) if minute < 10 else minute
 
-print(f"Workout reminder has been set!\nYou'll watch '{Fore.GREEN}{video_title}{Fore.RESET}' \n  \
+print(f"\nWorkout reminder has been set!\nYou'll watch '{Fore.GREEN}{video_title}{Fore.RESET}' \n  \
         by {Fore.RED}'{video_author}'{Fore.RESET} \n  \
         at {Fore.BLUE}{hour}:{minute_vis}{Fore.RESET}!\n  \
         Be prepared!")
