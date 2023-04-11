@@ -12,6 +12,13 @@ url = input("Enter the url of a workout YouTube video (or press Enter): ")
 
 if url == '':
         url = "https://www.youtube.com/watch?v=MTU4iCDntjs"
+else:
+    if not url.startswith('https'):
+        url = 'https://www.' + url
+        
+if not url.__contains__('youtube'):
+    print("\nThat's not a YouTube video url. Next time please give the correct url.")
+    exit(1)
 
 video = YouTube(url)
 
