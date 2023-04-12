@@ -74,9 +74,9 @@ while True:
         
         pyautogui.press('f')        # Pressing 'f' key, to get into fullscreen
         
-        toaster.show_toast("Workout started!", "If you want to cancel it, press 'Ctrl + W'! Have fun!", duration=5)
-        
         print(f"\nYour video: '{Fore.GREEN}{video_title}{Fore.RESET}' just started!\nHave fun!")
+        
+        toaster.show_toast("Workout started!", "If you want to cancel it, press 'Ctrl + W'! Have fun!", duration=5)
         
         closed = False
         while True:
