@@ -1,10 +1,13 @@
 import webbrowser
 import time
+import keyboard
 import pyautogui
 from pytube import YouTube
 from colorama import init, Fore
+from win10toast import ToastNotifier
 
-init()      # Initializing colorama 
+init()                      # Initializing colorama 
+toaster = ToastNotifier()   # Initializing the notifier
 
 print("\nDefault workout YouTube video: 4 Minute OFFICE STRETCHING(full body)\n")
 url = input("Enter the url of a workout YouTube video (or press Enter): ")
@@ -30,9 +33,6 @@ video_length = video.length         # YouTube video's length-duration
 video_minutes = video_length // 60
 video_seconds = video_length % 60
 
-# We get the current time
-current_time = time.localtime()
-
 # In this section we set the time we want the script to open the video (24-hour format)
 print("\nDefault hour/minute: 15:50\n")
 hour = input("Enter the hour of the day for the reminder (or press Enter): ")
@@ -50,9 +50,13 @@ else:
     
 minute_vis = '0' + str(minute) if minute < 10 else minute   # If the minute is between 0 and 9, we want to print 00 - 09
 
+cur_seconds = time.localtime().tm_sec
+
+time_scheduled_in_sec = hour * 60 * 60 + minute * 60 + cur_seconds
+
 print(f"\nWorkout reminder has been set!\nYou'll watch '{Fore.GREEN}{video_title}{Fore.RESET}' \n  \
         by {Fore.RED}'{video_author}'{Fore.RESET} \n  \
-        at {Fore.BLUE}{hour}:{minute_vis}:{time.localtime().tm_sec if time.localtime().tm_sec>9 else '0'+str(time.localtime().tm_sec)}{Fore.RESET}!\n  \
+        at {Fore.BLUE}{hour}:{minute_vis}:{time.localtime().tm_sec if cur_seconds>9 else '0'+str(cur_seconds)}{Fore.RESET}!\n  \
         Be prepared to dedicate {Fore.GREEN}{video_minutes} minutes and {video_seconds} seconds{Fore.RESET} of your time!")
 
 while True:
@@ -64,18 +68,37 @@ while True:
         
         webbrowser.open(url)        # Opening the URL in the default web browser
         
+        time_started_in_sec = time.localtime().tm_hour * 60 * 60 + time.localtime().tm_min * 60 + time.localtime().tm_sec
+        
         time.sleep(4)               # Waiting 4 seconds to load the video
         
         pyautogui.press('f')        # Pressing 'f' key, to get into fullscreen
         
+        toaster.show_toast("Workout started!", "If you want to cancel it, press 'Ctrl + W'! Have fun!", duration=5)
+        
         print(f"\nYour video: '{Fore.GREEN}{video_title}{Fore.RESET}' just started!\nHave fun!")
         
-        time.sleep(video_length)
-        
-        pyautogui.hotkey('ctrl', 'w')   # Closing the tab
+        closed = False
+        while True:
+            if (keyboard.is_pressed('ctrl') and keyboard.is_pressed('w')):
+                time_closed_in_sec = time.localtime().tm_hour * 60 * 60 + time.localtime().tm_min * 60 + time.localtime().tm_sec
+                time_played_in_sec = abs(time_closed_in_sec - time_started_in_sec)
+                closed = True
+                break
+            current_time_playing = time.localtime().tm_hour * 60 * 60 + time.localtime().tm_min * 60 + time.localtime().tm_sec
+            if current_time_playing - time_started_in_sec == video_length:
+                time_played_in_sec = video_length
+                break
+                
+        if closed == False:
+            pyautogui.hotkey('ctrl', 'w')   # Closing the tab
+            
+        print(f"video length: {time_played_in_sec}")
+            
+        toaster.show_toast("Workout ended!", "Tab closed! See you again tomorrow!", duration=5)
         
         print(f"\nVideo-Workout ended! Tab closed!\nNext workout same time tomorrow! Have a good day!\n")
 
-        time.sleep(24 * 60 * 60 - video_length)    # Waiting exactly 24 hours minus the length of the video, to check the time again
+        time.sleep(24 * 60 * 60 - time_played_in_sec)    # Waiting exactly 24 hours minus the length of the video, to check the time again
     else:
         time.sleep(60)              # Checking the time every 60 seconds
