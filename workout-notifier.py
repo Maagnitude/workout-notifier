@@ -36,7 +36,7 @@ video_seconds = video_length % 60
 # In this section we set the time we want the script to open the video (24-hour format)
 print("\nDefault hour/minute: 15:50\n")
 hour = input("Enter the hour of the day for the reminder (or press Enter): ")
-minute = input("\nEnter the minute of the day for the reminder (or press Enter): ")
+minute = input("\nEnter the minute of the hour for the reminder (or press Enter): ")
 
 if hour == '':              # If no hour given, default is 15
     hour = 15
